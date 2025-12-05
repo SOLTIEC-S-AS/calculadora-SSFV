@@ -1,0 +1,296 @@
+:root {
+  /* Colores de SOLTIEC */
+  --color-primario: #005d7c;   /* teal oscuro SOLTIEC */
+  --color-secundario: #84b3c1; /* azul claro */
+  --color-fondo: #f5f7f9;
+  --color-texto: #0f172a;
+  --color-borde: #dde5eb;
+  --radio: 12px;
+  --sombra: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top left, #e3f1f6 0, #f5f7f9 45%, #f5f7f9 100%);
+  color: var(--color-texto);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 16px;
+}
+
+.wrapper {
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--sombra);
+  max-width: 1100px;
+  width: 100%;
+  padding: 22px 22px 18px;
+  border: 1px solid rgba(0, 93, 124, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-borde);
+  padding-bottom: 10px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-soltiec {
+  height: 40px; /* ajustable */
+  width: auto;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primario);
+}
+
+.tagline {
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.pill {
+  font-size: 0.8rem;
+  background: #e3f3f7;
+  color: var(--color-primario);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 93, 124, 0.25);
+  white-space: nowrap;
+}
+
+/* LAYOUT PRINCIPAL EN 3 COLUMNAS */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+/* COLUMNA 1: HERO TEXTO */
+.hero-left h1 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  margin-bottom: 6px;
+  color: #0f172a;
+}
+
+.hero-highlight {
+  color: var(--color-primario);
+}
+
+.hero-left p {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 6px;
+}
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.mini-item {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 0.78rem;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
+
+.mini-item strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-primario);
+}
+
+.note {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* CARDS (FORM Y RESULTADO) */
+.card {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--color-borde);
+}
+
+.card h2 {
+  font-size: 1rem;
+  margin-bottom: 6px;
+  color: var(--color-primario);
+}
+
+.card p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+/* FORMULARIOS */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 3px;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="email"],
+select {
+  width: 100%;
+  padding: 7px 9px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.85rem;
+  background: white;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid rgba(0, 93, 124, 0.3);
+  border-color: var(--color-primario);
+}
+
+.hint {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* BOTONES */
+.btn-primario {
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: default; /* sin JS aún */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  box-shadow: var(--sombra);
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+.btn-primario span {
+  font-size: 1.1rem;
+}
+
+.info-btn {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* RESULTADOS */
+.resultado-empty {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  padding: 10px 4px;
+  text-align: center;
+  border-radius: 10px;
+  background: #eef2f7;
+}
+
+/* DIVISOR EN CARD DE RESULTADOS */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-borde);
+  margin: 10px 0;
+}
+
+/* TEXTOS EXTRA */
+.lead-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  color: var(--color-primario);
+}
+
+.disclaimer {
+  font-size: 0.7rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* FOOTER */
+.footer {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  text-align: right;
+  border-top: 1px solid var(--color-borde);
+  padding-top: 6px;
+  margin-top: 4px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  body {
+    padding: 10px;
+  }
+
+  .wrapper {
+    padding: 14px 12px 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer {
+    text-align: center;
+  }
+}
