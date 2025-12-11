@@ -62,7 +62,7 @@
       <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
       <section class="card card-form">
         <h2>Datos de tus facturas</h2>
-        <p>Escribe el valor total de tus 3 últimas facturas de energía (en COP).</p>
+        <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
 
         <div class="form-row">
           <div>
@@ -71,12 +71,12 @@
           </div>
 
           <div>
-            <label for="fact2">Factura 2 (COP)</label>
+            <label for="fact2">Factura 2 (kWh)</label>
             <input type="number" id="fact2" placeholder="Ej: 110" min="0">
           </div>
 
           <div>
-            <label for="fact3">Factura 3 (COP)</label>
+            <label for="fact3">Factura 3 (kWh)</label>
             <input type="number" id="fact3" placeholder="Ej: 105" min="0">
           </div>
         </div>
@@ -170,12 +170,15 @@
             <label for="correo">Correo electrónico</label>
             <input type="email" id="correo" placeholder="Ej: correo@ejemplo.com">
           </div>
+          
 
-          <div>
-            <label for="ciudad">Ciudad</label>
-            <input type="text" id="ciudad" placeholder="Ej: Medellín">
-          </div>
         </div>
+<div>
+  <label for="comentarios">Comentarios</label>
+  <textarea id="comentarios" class="textarea-auto" placeholder="Escribe aquí tus comentarios adicionales..."></textarea>
+</div>
+
+
 
         <button id="btn-enviar-lead" class="btn-primario" type="button">
           Enviar mis datos

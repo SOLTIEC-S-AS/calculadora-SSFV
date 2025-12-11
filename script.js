@@ -45,3 +45,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 // --- FIN: CARGA DE DEPARTAMENTOS Y CIUDADES ---
+
+
+
+const textarea = document.getElementById("comentarios");
+
+textarea.addEventListener("input", autoResize);
+
+function autoResize() {
+  this.style.height = "auto";       // reset
+  this.style.height = this.scrollHeight + "px"; // expand hacia abajo
+}

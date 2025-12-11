@@ -294,3 +294,23 @@ select:focus {
     text-align: center;
   }
 }
+
+
+textarea.textarea-auto {
+  width: 100%;
+  min-height: 85px;
+  max-height: 300px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: none; /* no manual resize */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea.textarea-auto:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.2);
+}
