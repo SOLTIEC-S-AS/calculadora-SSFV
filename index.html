@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Calculadora Solar - SOLTIEC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Hoja de estilos -->
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
   <div class="wrapper">
     <!-- ENCABEZADO -->
     <header class="header">
       <div class="header-left">
-        <!-- Ajusta el nombre del archivo si cambia -->
         <img src="images/Logo_SOLTIEC.jpg" alt="SOLTIEC" class="logo-soltiec">
         <div>
           <div class="brand">SOLTIEC</div>
@@ -67,18 +66,35 @@
 
         <div class="form-row">
           <div>
-            <label for="fact1">Factura 1 (COP)</label>
-            <input type="number" id="fact1" placeholder="Ej: 150000" min="0">
+            <label for="fact1">Factura 1 (kWh)</label>
+            <input type="number" id="fact1" placeholder="Ej: 100" min="0">
           </div>
 
           <div>
             <label for="fact2">Factura 2 (COP)</label>
-            <input type="number" id="fact2" placeholder="Ej: 145000" min="0">
+            <input type="number" id="fact2" placeholder="Ej: 110" min="0">
           </div>
 
           <div>
             <label for="fact3">Factura 3 (COP)</label>
-            <input type="number" id="fact3" placeholder="Ej: 160000" min="0">
+            <input type="number" id="fact3" placeholder="Ej: 105" min="0">
+          </div>
+        </div>
+
+        <!-- DEPARTAMENTO Y CIUDAD -->
+        <div class="form-row">
+          <div>
+            <label for="department">Departamento</label>
+            <select id="department" name="department">
+              <option value="">Selecciona un departamento</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="city">Ciudad</label>
+            <select id="city" name="city">
+              <option value="">Selecciona una ciudad</option>
+            </select>
           </div>
         </div>
 
@@ -176,5 +192,7 @@
     </footer>
   </div>
 
+  
+<script src="script.js"></script>
 </body>
 </html>
