@@ -110,6 +110,8 @@ function getFormData() {
 // --- SECCIÓN: CÁLCULOS ---
 function calcularPresupuesto(data) {
   const sumaFacturas = data.fact1 + data.fact2 + data.fact3;
+  const promFacturas = sumaFacturas / 3;
+  const consumDia=promFacturas/30;
   const presupuestoFinal = sumaFacturas / 30;
 
   return {
