@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <title>Calculadora Solar - SOLTIEC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-
   <div class="wrapper">
     <!-- ENCABEZADO -->
     <header class="header">
@@ -113,7 +110,7 @@
 
           <div>
             <label for="porcentaje">% a cubrir con solar</label>
-            <input type="number" id="porcentaje" value="100" min="10" max="100" step="5">
+            <input type="number" id="porcentaje" value="100" min="10" max="100" step="2">
             <div class="hint">Entre 10% y 100%.</div>
           </div>
         </div>
@@ -131,10 +128,6 @@
         <button id="btn-calcular" class="btn-primario" type="button">
           Calcular mi sistema <span>➜</span>
         </button>
-
-        <p class="info-btn">
-          (Activaremos este botón con JavaScript más adelante)
-        </p>
       </section>
 
       <!-- COLUMNA 3: RESULTADO + CONTACTO -->
@@ -170,32 +163,21 @@
             <label for="correo">Correo electrónico</label>
             <input type="email" id="correo" placeholder="Ej: correo@ejemplo.com">
           </div>
-          
-
         </div>
-<div>
-  <label for="comentarios">Comentarios</label>
-  <textarea id="comentarios" class="textarea-auto" placeholder="Escribe aquí tus comentarios adicionales..."></textarea>
-</div>
-
-
-
+        <div>
+          <label for="comentarios">Comentarios</label>
+          <textarea id="comentarios" class="textarea-auto"
+            placeholder="Escribe aquí tus comentarios adicionales..."></textarea>
+        </div>
         <button id="btn-enviar-lead" class="btn-primario" type="button">
           Enviar mis datos
         </button>
-
-        <p class="info-btn">
-          (Luego conectaremos este botón con tu correo o CRM)
-        </p>
       </section>
     </main>
-
     <footer class="footer">
       © 2025 SOLTIEC · Soluciones que entregan valor.
     </footer>
   </div>
-
-  
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -112,6 +112,9 @@ function calcularPresupuesto(data) {
   const sumaFacturas = data.fact1 + data.fact2 + data.fact3;
   const promFacturas = sumaFacturas / 3;
   const consumDia=promFacturas/30;
+
+
+  
   const presupuestoFinal = sumaFacturas / 30;
 
   return {
@@ -134,3 +137,42 @@ function mostrarResultado(calculos) {
   `;
 }
 // --- FIN: UI RESULTADOS ---
+
+
+
+// --- SECCIÓN: VALIDACIÓN % A CUBRIR CON SOLAR (BLUR) ---
+document.addEventListener("DOMContentLoaded", () => {
+  const porcentajeInput = document.getElementById("porcentaje");
+  if (!porcentajeInput) return;
+
+  // Crear mensaje de error dinámicamente
+  const errorMsg = document.createElement("div");
+  errorMsg.className = "error-text";
+  errorMsg.textContent = "El porcentaje debe estar entre 10% y 100%";
+  errorMsg.style.display = "none";
+
+  porcentajeInput.parentNode.appendChild(errorMsg);
+
+  porcentajeInput.addEventListener("blur", () => {
+    const value = Number(porcentajeInput.value);
+
+    if (Number.isNaN(value) || value < 10 || value > 100) {
+      // ❌ Error
+      porcentajeInput.classList.add("input-error");
+      errorMsg.style.display = "block";
+    } else {
+      // ✅ Correcto
+      porcentajeInput.classList.remove("input-error");
+      errorMsg.style.display = "none";
+    }
+  });
+});
+
+
+const btnCalcular = document.getElementById("btn-calcular");
+
+if (value < 10 || value > 100) {
+  btnCalcular.disabled = true;
+} else {
+  btnCalcular.disabled = false;
+}
