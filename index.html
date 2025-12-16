@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Calculadora Solar - SOLTIEC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="wrapper">
     <!-- ENCABEZADO -->
@@ -18,7 +20,12 @@
         </div>
       </div>
 
-      <div class="pill">Simulación solar rápida · Sin compromiso</div>
+      <div>
+        <button class="btn-primario" type="button" onclick="window.location.href='roi.html'">
+          Ver retorno de inversión
+        </button>
+
+      </div>
     </header>
 
     <!-- LAYOUT PRINCIPAL EN 3 COLUMNAS -->
@@ -174,10 +181,13 @@
         </button>
       </section>
     </main>
-    <footer class="footer">
-      © 2025 SOLTIEC · Soluciones que entregan valor.
-    </footer>
+<footer class="footer">
+  © <span id="current-year"></span> SOLTIEC S.A.S. · Soluciones que entregan valor.
+</footer>
+
+
   </div>
   <script src="script.js"></script>
 </body>
+
 </html>

@@ -176,3 +176,11 @@ if (value < 10 || value > 100) {
 } else {
   btnCalcular.disabled = false;
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const yearSpan = document.getElementById("current-year");
+  if (yearSpan) {
+    yearSpan.textContent = new Date().getFullYear();
+  }
+});

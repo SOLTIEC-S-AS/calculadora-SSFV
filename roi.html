@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retorno de inversión (ROI) - SOLTIEC S.A.S.</title>
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Chart.js SOLO en esta página -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- ENCABEZADO -->
+    <header class="header">
+      <div class="header-left">
+        <img src="images/Logo_SOLTIEC.jpg" alt="SOLTIEC S.A.S." class="logo-soltiec" />
+        <div>
+          <div class="brand">SOLTIEC</div>
+          <div class="tagline">Retorno de inversión (ROI)</div>
+        </div>
+      </div>
+
+      <a class="pill btn-volver" href="index.html">← Volver</a>
+    </header>
+
+    <main class="layout layout-roi">
+      <section class="card card-roi">
+        <h2>Gráfica de retorno de inversión</h2>
+        <p class="subtext">Visualiza el flujo anual y el retorno acumulado año a año.</p>
+
+        <div class="chart-wrap">
+          <canvas id="roiChart" aria-label="Gráfica ROI" role="img"></canvas>
+        </div>
+
+        <div class="roi-metrics">
+          <div class="roi-metric">
+            <div class="roi-metric-title">Payback estimado</div>
+            <div id="payback" class="roi-metric-value">—</div>
+          </div>
+
+          <div class="roi-metric">
+            <div class="roi-metric-title">Retorno a 10 años</div>
+            <div id="roi10" class="roi-metric-value">—</div>
+          </div>
+
+          <div class="roi-metric">
+            <div class="roi-metric-title">Inversión inicial</div>
+            <div id="capex" class="roi-metric-value">—</div>
+          </div>
+
+          <div class="roi-metric">
+            <div class="roi-metric-title">Ahorro anual (año 1)</div>
+            <div id="savingsY1" class="roi-metric-value">—</div>
+          </div>
+        </div>
+
+        <p class="note-roi">
+          *Resultados aproximados. El ROI real depende de tarifa, consumo, irradiancia, degradación, inflación, etc.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      © <span id="current-year"></span> SOLTIEC · Soluciones que entregan valor.
+    </footer>
+  </div>
+
+  <script src="roi.js"></script>
+</body>
+</html>
