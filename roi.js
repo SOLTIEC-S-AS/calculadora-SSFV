@@ -71,17 +71,27 @@ async function loadROI() {
     data: {
       labels: years.map(y => `Año ${y}`),
       datasets: [
-        {
-          label: "Flujo anual (COP)",
-          data: cashflow
-        },
-        {
-          label: "Retorno acumulado (COP)",
-          type: "line",
-          data: cumulative,
-          yAxisID: "y"
-        }
-      ]
+  {
+    label: "Flujo anual (COP)",
+    data: cashflow,
+    backgroundColor: "rgba(158, 211, 245, 0.85)", // azul claro SOLTIEC
+    borderColor: "#0F6E8C",
+    borderWidth: 1,
+    borderRadius: 6
+  },
+  {
+    label: "Retorno acumulado (COP)",
+    type: "line",
+    data: cumulative,
+    yAxisID: "y",
+    borderColor: "#0A4E63",     // azul oscuro SOLTIEC
+    backgroundColor: "rgba(15, 110, 140, 0.15)",
+    pointBackgroundColor: "#0F6E8C",
+    pointBorderColor: "#0F6E8C",
+    pointRadius: 4,
+    tension: 0.3               // curva suave
+  }
+]
     },
     options: {
       responsive: true,

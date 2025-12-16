@@ -335,6 +335,18 @@ textarea.textarea-auto:focus {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 /* =========================
    ROI PAGE (responsive)
    ========================= */
@@ -407,6 +419,14 @@ textarea.textarea-auto:focus {
     height: 320px;
   }
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -495,4 +515,20 @@ textarea.textarea-auto:focus {
     height: 320px;
     padding: 10px;
   }
+}
+
+
+#btn-roi,
+.btn-roi {
+  cursor: pointer;
+}
+
+.btn-primario{
+  cursor: pointer;
+}
+
+.chart-container {
+  width: 100%;
+  height: 420px;
+  margin-top: 20px;
 }

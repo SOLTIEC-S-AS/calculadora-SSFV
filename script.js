@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const departamentos = await response.json(); // array grande
 
     // Llenar departamentos
-    departamentos.forEach(dep => {
+    departamentos.forEach((dep) => {
       const opt = document.createElement("option");
       opt.value = dep.departamento;
       opt.textContent = dep.departamento;
@@ -37,19 +37,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Llenar ciudades según departamento
     deptSelect.addEventListener("change", () => {
       const nombreDept = deptSelect.value;
-      const depObj = departamentos.find(d => d.departamento === nombreDept);
+      const depObj = departamentos.find((d) => d.departamento === nombreDept);
 
       citySelect.innerHTML = '<option value="">Selecciona una ciudad</option>';
       if (!depObj) return;
 
-      depObj.ciudades.forEach(ciudad => {
+      depObj.ciudades.forEach((ciudad) => {
         const opt = document.createElement("option");
         opt.value = ciudad;
         opt.textContent = ciudad;
         citySelect.appendChild(opt);
       });
     });
-
   } catch (err) {
     console.error("Error cargando ciudades:", err);
   }
@@ -95,7 +94,10 @@ function getFormData() {
     city: document.getElementById("city")?.value || "",
 
     estrato: Number(document.getElementById("estrato")?.value || 0),
+
+    // % cobertura solar
     porcentaje: Number(document.getElementById("porcentaje")?.value || 0),
+
     baterias: document.getElementById("baterias")?.value || "no",
 
     nombre: document.getElementById("nombre")?.value || "",
@@ -111,21 +113,27 @@ function getFormData() {
 function calcularPresupuesto(data) {
   const sumaFacturas = data.fact1 + data.fact2 + data.fact3;
   const promFacturas = sumaFacturas / 3;
-  const consumDia=promFacturas/30;
+  const consumoDia = promFacturas / 30;
 
+  // ✅ Potencia Pico del Sistema (regla: % cobertura / 10)
+  // Ej: 10% => 1 kWp, 50% => 5 kWp, 100% => 10 kWp
+  const potenciaPicoSistema = data.porcentaje / 10;
 
-  
+  // (Tu cálculo original)
   const presupuestoFinal = sumaFacturas / 30;
 
   return {
     sumaFacturas,
+    promFacturas,
+    consumoDia,
+    potenciaPicoSistema,
     presupuestoFinal
   };
 }
 // --- FIN: CÁLCULOS ---
 
 
-// --- SECCIÓN: UI RESULTADOS (opcional) ---
+// --- SECCIÓN: UI RESULTADOS (opcional) ------------------------------------------------------
 function mostrarResultado(calculos) {
   const resultadoDiv = document.getElementById("resultado");
   if (!resultadoDiv) return;
@@ -133,6 +141,9 @@ function mostrarResultado(calculos) {
   resultadoDiv.innerHTML = `
     <strong>Resultado preliminar</strong><br><br>
     Suma facturas: <b>${calculos.sumaFacturas.toFixed(2)}</b><br>
+    Promedio facturas: <b>${calculos.promFacturas.toFixed(2)}</b><br>
+    Consumo diario estimado: <b>${calculos.consumoDia.toFixed(2)}</b><br>
+    Potencia Pico del Sistema: <b>${calculos.potenciaPicoSistema.toFixed(1)} kWp</b><br>
     Presupuesto estimado diario: <b>${calculos.presupuestoFinal.toFixed(2)}</b>
   `;
 }
@@ -140,9 +151,11 @@ function mostrarResultado(calculos) {
 
 
 
-// --- SECCIÓN: VALIDACIÓN % A CUBRIR CON SOLAR (BLUR) ---
+// --- SECCIÓN: VALIDACIÓN % A CUBRIR CON SOLAR (BLUR + INPUT) ---
 document.addEventListener("DOMContentLoaded", () => {
   const porcentajeInput = document.getElementById("porcentaje");
+  const btnCalcular = document.getElementById("btn-calcular");
+
   if (!porcentajeInput) return;
 
   // Crear mensaje de error dinámicamente
@@ -153,34 +166,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   porcentajeInput.parentNode.appendChild(errorMsg);
 
-  porcentajeInput.addEventListener("blur", () => {
+  function validarPorcentajeYBoton() {
     const value = Number(porcentajeInput.value);
 
-    if (Number.isNaN(value) || value < 10 || value > 100) {
-      // ❌ Error
+    const invalido = Number.isNaN(value) || value < 10 || value > 100;
+
+    // UI de error
+    if (invalido) {
       porcentajeInput.classList.add("input-error");
       errorMsg.style.display = "block";
     } else {
-      // ✅ Correcto
       porcentajeInput.classList.remove("input-error");
       errorMsg.style.display = "none";
     }
-  });
+
+    // Botón calcular
+    if (btnCalcular) {
+      btnCalcular.disabled = invalido;
+    }
+  }
+
+  // Validar al salir del input
+  porcentajeInput.addEventListener("blur", validarPorcentajeYBoton);
+
+  // Validar mientras escribe (mejor UX)
+  porcentajeInput.addEventListener("input", validarPorcentajeYBoton);
+
+  // Validación inicial al cargar
+  validarPorcentajeYBoton();
 });
+// --- FIN: VALIDACIÓN % ---
 
 
-const btnCalcular = document.getElementById("btn-calcular");
-
-if (value < 10 || value > 100) {
-  btnCalcular.disabled = true;
-} else {
-  btnCalcular.disabled = false;
-}
-
-
+// --- SECCIÓN: FOOTER YEAR ---
 document.addEventListener("DOMContentLoaded", () => {
   const yearSpan = document.getElementById("current-year");
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
   }
 });
+// --- FIN: FOOTER YEAR ---
