@@ -1,104 +1,108 @@
 const URL_CITIES = "data/cities.json";
 
-// Variables globales
+// =====================
+// ESTADO EN MEMORIA (TAB)
+// =====================
+// Se conserva al navegar entre páginas en la misma pestaña,
+// pero lo limpiamos si la navegación fue "reload".
+const SESSION_KEY = "ssf_app_state_v1";
+
+let citiesMap = {}; // "Depto|Ciudad" -> {departamento, municipio, lat, lon, hsp}
 let leadData = {};
 let calculos = {};
 
-// Cache en memoria del JSON de ciudades
-let citiesData = null;
+// ---------------------
+// UTIL: Navegación (para limpiar en reload)
+// ---------------------
+function isReloadNavigation() {
+  const nav = performance.getEntriesByType?.("navigation")?.[0];
+  return nav?.type === "reload";
+}
 
-// Índices para selects
-let departmentsList = [];
-let citiesByDept = {};     // { "Antioquia": ["Medellín", ...] }
-let recordByKey = {};      // { "Antioquia|Medellín": {..} }
+// Limpia estado si recargaron
+function resetIfReload() {
+  if (isReloadNavigation()) {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+}
 
-// ------------------------------
-// Helpers
-// ------------------------------
+// ---------------------
+// UTIL: Guardar / cargar estado (sessionStorage)
+// ---------------------
+function saveAppState(partial = {}) {
+  const current = loadAppState();
+  const next = {
+    ...current,
+    ...partial,
+    _ts: Date.now()
+  };
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(next));
+}
+
+function loadAppState() {
+  try {
+    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+// ---------------------
+// UTIL: Auto-resize textarea
+// ---------------------
 function autoResize() {
   this.style.height = "auto";
   this.style.height = this.scrollHeight + "px";
 }
 
-function normalizeKeyPart(s) {
-  // Respeta tildes/ñ; solo recorta espacios
-  return String(s || "").trim();
+// ---------------------
+// UTIL: Parse número (facturas) sin negativos
+// ---------------------
+function parsePositiveNumber(str) {
+  const s = String(str ?? "").trim();
+  if (!s) return 0;
+  const n = Number(s);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, n);
 }
 
-function buildKey(department, city) {
-  return `${normalizeKeyPart(department)}|${normalizeKeyPart(city)}`;
+// Sanitiza input tipo factura: permite dígitos y un punto "."
+function sanitizeFacturaInput(el) {
+  let v = String(el.value ?? "");
+
+  // Quitar todo lo que no sea dígito o punto
+  v = v.replace(/[^\d.]/g, "");
+
+  // Solo un punto
+  const parts = v.split(".");
+  if (parts.length > 2) {
+    v = parts[0] + "." + parts.slice(1).join("");
+  }
+
+  // Evitar que empiece por punto
+  if (v.startsWith(".")) v = "0" + v;
+
+  el.value = v;
 }
 
-function setSelectOptions(selectEl, options, placeholderText = "Selecciona") {
-  if (!selectEl) return;
-  selectEl.innerHTML = `<option value="">${placeholderText}</option>`;
-  options.forEach((optValue) => {
-    const opt = document.createElement("option");
-    opt.value = optValue;
-    opt.textContent = optValue;
-    selectEl.appendChild(opt);
-  });
-}
-
-// Lee el JSON "nuevo" y arma índices
-function buildIndexesFromCitiesJson(obj) {
-  // obj esperado:
-  // {
-  //   "Huila|Hobo": { departamento:"Huila", municipio:"Hobo", lat:..., lon:..., hsp: ... },
-  //   ...
-  // }
-
-  recordByKey = obj || {};
-
-  // Construir departamentos únicos + ciudades por departamento
-  const deptSet = new Set();
-  citiesByDept = {};
-
-  Object.keys(recordByKey).forEach((key) => {
-    const rec = recordByKey[key];
-    const dept = rec?.departamento ?? key.split("|")[0];
-    const city = rec?.municipio ?? key.split("|")[1];
-
-    if (!dept || !city) return;
-
-    deptSet.add(dept);
-    if (!citiesByDept[dept]) citiesByDept[dept] = [];
-    citiesByDept[dept].push(city);
-  });
-
-  // Ordenar
-  departmentsList = Array.from(deptSet).sort((a, b) => a.localeCompare(b, "es"));
-
-  Object.keys(citiesByDept).forEach((dept) => {
-    citiesByDept[dept] = citiesByDept[dept]
-      .filter(Boolean)
-      .sort((a, b) => a.localeCompare(b, "es"));
-  });
-}
-
-function getSelectedCityRecord(department, city) {
-  const key = buildKey(department, city);
-  return recordByKey[key] || null;
-}
-
-// ------------------------------
-// Form data
-// ------------------------------
+// ---------------------
+// LECTURA FORMULARIO
+// ---------------------
 function getFormData() {
   return {
-    fact1: Number(document.getElementById("fact1")?.value || 0),
-    fact2: Number(document.getElementById("fact2")?.value || 0),
-    fact3: Number(document.getElementById("fact3")?.value || 0),
+    fact1: parsePositiveNumber(document.getElementById("fact1")?.value),
+    fact2: parsePositiveNumber(document.getElementById("fact2")?.value),
+    fact3: parsePositiveNumber(document.getElementById("fact3")?.value),
 
     department: document.getElementById("department")?.value || "",
     city: document.getElementById("city")?.value || "",
 
-    estrato: Number(document.getElementById("estrato")?.value || 0),
+    // ahora estrato puede venir "" (obligatorio)
+    estrato: document.getElementById("estrato")?.value || "",
+    porcentaje: parsePositiveNumber(document.getElementById("porcentaje")?.value),
 
-    // % cobertura solar
-    porcentaje: Number(document.getElementById("porcentaje")?.value || 0),
-
-    baterias: document.getElementById("baterias")?.value || "no",
+    // ahora baterias es obligatorio: puede venir ""
+    baterias: document.getElementById("baterias")?.value || "",
 
     nombre: document.getElementById("nombre")?.value || "",
     telefono: document.getElementById("telefono")?.value || "",
@@ -107,21 +111,17 @@ function getFormData() {
   };
 }
 
-// ------------------------------
-// Cálculos
-// ------------------------------
-function calcularPresupuesto(data, cityRec) {
+// ---------------------
+// CÁLCULOS
+// ---------------------
+function calcularPresupuesto(data, hsp) {
   const sumaFacturas = data.fact1 + data.fact2 + data.fact3;
   const promFacturas = sumaFacturas / 3;
   const consumoDia = promFacturas / 30;
 
-  // ✅ Potencia Pico del Sistema (regla: % cobertura / 10)
+  // Regla rápida: % cobertura / 10
   const potenciaPicoSistema = data.porcentaje / 10;
 
-  // HSP (si existe en el JSON)
-  const hsp = cityRec?.hsp ?? null;
-
-  // (Tu cálculo original)
   const presupuestoFinal = sumaFacturas / 30;
 
   return {
@@ -130,26 +130,20 @@ function calcularPresupuesto(data, cityRec) {
     consumoDia,
     potenciaPicoSistema,
     presupuestoFinal,
-    hsp,
-    lat: cityRec?.lat ?? null,
-    lon: cityRec?.lon ?? null
+    hsp: Number.isFinite(hsp) ? hsp : null
   };
 }
 
-// ------------------------------
-// UI de resultados
-// ------------------------------
+// ---------------------
+// UI RESULTADOS
+// ---------------------
 function mostrarResultado(calculos) {
   const resultadoDiv = document.getElementById("resultado");
   if (!resultadoDiv) return;
 
-  const hspTxt = (calculos.hsp !== null && calculos.hsp !== undefined)
-    ? `${Number(calculos.hsp).toFixed(3)} kWh/m²/día`
-    : "No disponible";
-
-  const coordsTxt = (calculos.lat !== null && calculos.lon !== null)
-    ? `${Number(calculos.lat).toFixed(6)}, ${Number(calculos.lon).toFixed(6)}`
-    : "No disponibles";
+  const hspTxt = (calculos.hsp == null)
+    ? `<span style="color:#b00;">(sin HSP: revisa selección de ciudad)</span>`
+    : `<b>${calculos.hsp.toFixed(3)}</b>`;
 
   resultadoDiv.innerHTML = `
     <strong>Resultado preliminar</strong><br><br>
@@ -157,29 +151,89 @@ function mostrarResultado(calculos) {
     Promedio facturas: <b>${calculos.promFacturas.toFixed(2)}</b><br>
     Consumo diario estimado: <b>${calculos.consumoDia.toFixed(2)}</b><br>
     Potencia Pico del Sistema: <b>${calculos.potenciaPicoSistema.toFixed(1)} kWp</b><br>
-    HSP (ciudad): <b>${hspTxt}</b><br>
-    Coordenadas: <b>${coordsTxt}</b><br>
+    HSP (ciudad): ${hspTxt}<br>
     Presupuesto estimado diario: <b>${calculos.presupuestoFinal.toFixed(2)}</b>
   `;
 }
 
-// ------------------------------
-// Validación % + botón
-// ------------------------------
-function initPorcentajeValidation() {
+// ---------------------
+// CARGA cities.json (nuevo formato: objeto)
+// ---------------------
+async function loadCitiesMap() {
+  const resp = await fetch(URL_CITIES);
+  if (!resp.ok) throw new Error("No se pudo cargar cities.json");
+  const data = await resp.json();
+
+  // Si te llega como array viejo (por si acaso), avisamos
+  if (Array.isArray(data)) {
+    throw new Error("Tu cities.json sigue en formato viejo (array). Debe ser objeto { 'Depto|Ciudad': {...} }");
+  }
+
+  return data;
+}
+
+// ---------------------
+// POBLAR SELECTS: Departamento -> Ciudad
+// ---------------------
+function getDepartamentosUnicos(mapObj) {
+  const set = new Set();
+  for (const key of Object.keys(mapObj)) {
+    const item = mapObj[key];
+    if (item?.departamento) set.add(item.departamento);
+  }
+  return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
+}
+
+function getCiudadesPorDepartamento(mapObj, departamento) {
+  const cities = [];
+  for (const key of Object.keys(mapObj)) {
+    const item = mapObj[key];
+    if (item?.departamento === departamento) {
+      cities.push(item.municipio);
+    }
+  }
+  // Orden + quitar repetidas
+  return Array.from(new Set(cities)).sort((a, b) => a.localeCompare(b, "es"));
+}
+
+function findCityRecord(mapObj, departamento, municipio) {
+  const key = `${departamento}|${municipio}`;
+  return mapObj[key] || null;
+}
+
+function fillDepartments(deptSelect, departamentos) {
+  deptSelect.innerHTML = '<option value="">Selecciona un departamento</option>';
+  departamentos.forEach(dep => {
+    const opt = document.createElement("option");
+    opt.value = dep;
+    opt.textContent = dep;
+    deptSelect.appendChild(opt);
+  });
+}
+
+function fillCities(citySelect, ciudades) {
+  citySelect.innerHTML = '<option value="">Selecciona una ciudad</option>';
+  ciudades.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    citySelect.appendChild(opt);
+  });
+}
+
+// ---------------------
+// VALIDACIÓN % (10 a 100) + botón
+// ---------------------
+function setupPorcentajeValidation() {
   const porcentajeInput = document.getElementById("porcentaje");
   const btnCalcular = document.getElementById("btn-calcular");
   if (!porcentajeInput) return;
 
-  // Crear mensaje de error dinámicamente (una sola vez)
-  let errorMsg = porcentajeInput.parentNode?.querySelector?.(".error-text");
-  if (!errorMsg) {
-    errorMsg = document.createElement("div");
-    errorMsg.className = "error-text";
-    errorMsg.textContent = "El porcentaje debe estar entre 10% y 100%";
-    errorMsg.style.display = "none";
-    porcentajeInput.parentNode.appendChild(errorMsg);
-  }
+  const errorMsg = document.createElement("div");
+  errorMsg.className = "error-text";
+  errorMsg.textContent = "El porcentaje debe estar entre 10% y 100%";
+  errorMsg.style.display = "none";
+  porcentajeInput.parentNode.appendChild(errorMsg);
 
   function validar() {
     const value = Number(porcentajeInput.value);
@@ -193,108 +247,265 @@ function initPorcentajeValidation() {
       errorMsg.style.display = "none";
     }
 
-    if (btnCalcular) btnCalcular.disabled = invalido;
+    // OJO: ya no bloqueamos el botón por aquí.
+    // La validación obligatoria se hace al submit.
+    if (btnCalcular) btnCalcular.disabled = false;
   }
 
-  porcentajeInput.addEventListener("blur", validar);
   porcentajeInput.addEventListener("input", validar);
+  porcentajeInput.addEventListener("blur", validar);
   validar();
 }
 
-// ------------------------------
-// Carga cities.json + selects
-// ------------------------------
-async function loadCitiesJson() {
-  const response = await fetch(URL_CITIES);
-  if (!response.ok) throw new Error("No se pudo cargar cities.json");
-  const data = await response.json();
+// ---------------------
+// VALIDACIÓN FACTURAS: sin "-" y solo >= 0 con "."
+// ---------------------
+function setupFacturasValidation() {
+  const ids = ["fact1", "fact2", "fact3"];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
 
-  // Asegurar que sea objeto (no array)
-  if (Array.isArray(data)) {
-    throw new Error("Tu cities.json ahora debe ser un OBJETO { 'Depto|Ciudad': {...} }, no un array.");
-  }
+    // Evitar negativos desde el teclado
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "-" || e.key === "e" || e.key === "E") {
+        e.preventDefault();
+      }
+    });
 
-  return data;
+    // Sanitizar mientras escribe
+    el.addEventListener("input", () => sanitizeFacturaInput(el));
+  });
 }
 
-function initDepartmentCitySelectors() {
-  const deptSelect = document.getElementById("department");
-  const citySelect = document.getElementById("city");
+// ---------------------
+// VALIDACIÓN OBLIGATORIA (NUEVO)
+// ---------------------
+function setupRequiredFieldsValidation() {
+  const form = document.getElementById("ssfvForm");
+  const alertBox = document.getElementById("formAlert");
+  if (!form || !alertBox) return;
 
-  if (!deptSelect || !citySelect) {
-    console.error("No se encontraron los selects #department o #city");
-    return;
-  }
+  const fields = {
+    fact1: document.getElementById("fact1"),
+    fact2: document.getElementById("fact2"),
+    fact3: document.getElementById("fact3"),
+    department: document.getElementById("department"),
+    city: document.getElementById("city"),
+    estrato: document.getElementById("estrato"),
+    porcentaje: document.getElementById("porcentaje"),
+    baterias: document.getElementById("baterias"),
+  };
 
-  // 1) Llenar departamentos
-  setSelectOptions(deptSelect, departmentsList, "Selecciona un departamento");
+  const mark = (el, bad) => {
+    if (!el) return;
+    el.classList.toggle("field-error", !!bad);
+  };
 
-  // 2) Cuando cambie el depto, llenar ciudades
-  deptSelect.addEventListener("change", () => {
-    const dept = deptSelect.value;
+  const showAlert = (msg) => {
+    alertBox.textContent = msg;
+    alertBox.style.display = "block";
+  };
 
-    const cities = citiesByDept[dept] || [];
-    setSelectOptions(citySelect, cities, "Selecciona una ciudad");
+  const clearAlert = () => {
+    alertBox.textContent = "";
+    alertBox.style.display = "none";
+  };
 
-    // Limpia cualquier info previa (si estás mostrando HSP en consola, etc.)
-    console.log("Departamento seleccionado:", dept);
-  });
+  function validateAll() {
+    clearAlert();
+    Object.values(fields).forEach(el => mark(el, false));
 
-  // 3) Cuando cambie la ciudad, obtener HSP del registro
-  citySelect.addEventListener("change", () => {
-    const dept = deptSelect.value;
-    const city = citySelect.value;
+    const d = getFormData();
+    const errors = [];
 
-    const rec = getSelectedCityRecord(dept, city);
-    if (!rec) {
-      console.warn("No encontré registro para:", buildKey(dept, city));
-      return;
+    // Facturas: obligatorias y > 0
+    if (!(d.fact1 > 0)) errors.push({ el: fields.fact1 });
+    if (!(d.fact2 > 0)) errors.push({ el: fields.fact2 });
+    if (!(d.fact3 > 0)) errors.push({ el: fields.fact3 });
+
+    // Selects obligatorios
+    if (!d.department) errors.push({ el: fields.department });
+    if (!d.city) errors.push({ el: fields.city });
+    if (!d.estrato) errors.push({ el: fields.estrato });
+    if (!d.baterias) errors.push({ el: fields.baterias });
+
+    // % solar obligatorio entre 10 y 100
+    const pct = Number(fields.porcentaje?.value);
+    if (!fields.porcentaje?.value || Number.isNaN(pct) || pct < 10 || pct > 100) {
+      errors.push({ el: fields.porcentaje });
     }
 
-    console.log("Ciudad seleccionada:", rec.municipio, "| HSP:", rec.hsp, "| coords:", rec.lat, rec.lon);
+    if (errors.length) {
+      errors.forEach(e => mark(e.el, true));
+      showAlert("Te faltan datos obligatorios. Revisa los campos marcados en rojo.");
+      errors[0].el?.focus?.();
+      return false;
+    }
+    return true;
+  }
+
+  // Validar al enviar (submit)
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    if (!validateAll()) return;
+
+    // ✅ si todo está OK, calculamos:
+    leadData = getFormData();
+    const rec = findCityRecord(citiesMap, leadData.department, leadData.city);
+    const hsp = rec?.hsp;
+
+    calculos = calcularPresupuesto(leadData, hsp);
+
+    // Guardar para ROI/back
+    saveAppState({ leadData, calculos });
+
+    mostrarResultado(calculos);
+
+    // Si luego navegas a ROI, aquí sería el lugar:
+    // window.location.href = "roi.html";
+  });
+
+  // Opcional: limpiar alerta cuando el usuario empiece a corregir
+  form.addEventListener("input", () => {
+    if (alertBox.style.display === "block") {
+      clearAlert();
+    }
   });
 }
 
-// ------------------------------
-// Main DOMContentLoaded
-// ------------------------------
+// ---------------------
+// Persistencia "solo entre páginas" en la pestaña
+// (NO persiste si recargas porque la limpiamos en resetIfReload())
+// ---------------------
+function setupAutosaveInputs() {
+  const allIds = [
+    "fact1", "fact2", "fact3",
+    "department", "city",
+    "estrato", "porcentaje", "baterias",
+    "nombre", "telefono", "correo", "comentarios"
+  ];
+
+  function saveNow() {
+    const data = getFormData();
+    saveAppState({ leadData: data });
+  }
+
+  allIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", saveNow);
+    el.addEventListener("change", saveNow);
+  });
+}
+
+function restoreInputsFromState() {
+  const state = loadAppState();
+  if (!state?.leadData) return;
+
+  const d = state.leadData;
+
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = val ?? "";
+  };
+
+  setVal("fact1", d.fact1);
+  setVal("fact2", d.fact2);
+  setVal("fact3", d.fact3);
+
+  setVal("estrato", d.estrato);
+  setVal("porcentaje", d.porcentaje);
+  setVal("baterias", d.baterias);
+
+  setVal("nombre", d.nombre);
+  setVal("telefono", d.telefono);
+  setVal("correo", d.correo);
+  setVal("comentarios", d.comentarios);
+
+  // department/city los restauramos después de cargar citiesMap,
+  // para que existan las options.
+}
+
+// ---------------------
+// INIT
+// ---------------------
 document.addEventListener("DOMContentLoaded", async () => {
-  // Auto-resize comentarios
-  const textarea = document.getElementById("comentarios");
-  if (textarea) textarea.addEventListener("input", autoResize);
+  // 0) Reset si fue recarga
+  resetIfReload();
 
   // Footer year
   const yearSpan = document.getElementById("current-year");
   if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-  // Validación porcentaje
-  initPorcentajeValidation();
+  // Auto-resize comentarios
+  const textarea = document.getElementById("comentarios");
+  if (textarea) textarea.addEventListener("input", autoResize);
 
-  // Cargar cities.json (nuevo formato)
+  // Validaciones base
+  setupPorcentajeValidation();
+  setupFacturasValidation();
+
+  // Autosave en sesión (para ROI/back)
+  setupAutosaveInputs();
+  restoreInputsFromState();
+
+  // Cargar citiesMap (nuevo)
   try {
-    citiesData = await loadCitiesJson();
-    buildIndexesFromCitiesJson(citiesData);
-    initDepartmentCitySelectors();
+    citiesMap = await loadCitiesMap();
   } catch (err) {
-    console.error("Error cargando o procesando cities.json:", err);
+    console.error("Error cargando cities.json:", err);
+    return;
   }
 
-  // Botón calcular
-  const btnCalcular = document.getElementById("btn-calcular");
-  if (btnCalcular) {
-    btnCalcular.addEventListener("click", () => {
-      leadData = getFormData();
+  const deptSelect = document.getElementById("department");
+  const citySelect = document.getElementById("city");
+  if (!deptSelect || !citySelect) {
+    console.error("No se encontraron los selects #department o #city");
+    return;
+  }
 
-      const rec = getSelectedCityRecord(leadData.department, leadData.city);
+  // Llenar departamentos
+  const departamentos = getDepartamentosUnicos(citiesMap);
+  fillDepartments(deptSelect, departamentos);
 
-      // Si no hay registro, seguimos igual pero sin HSP
-      calculos = calcularPresupuesto(leadData, rec);
+  // Restaurar depto/ciudad si había estado guardado
+  const state = loadAppState();
+  const prevDept = state?.leadData?.department || "";
+  const prevCity = state?.leadData?.city || "";
 
-      console.log("Datos usuario (leadData):", leadData);
-      console.log("Registro ciudad (rec):", rec);
-      console.log("Cálculos (calculos):", calculos);
+  if (prevDept) {
+    deptSelect.value = prevDept;
+    const ciudades = getCiudadesPorDepartamento(citiesMap, prevDept);
+    fillCities(citySelect, ciudades);
+  }
 
-      mostrarResultado(calculos);
-    });
+  if (prevDept && prevCity) {
+    citySelect.value = prevCity;
+  }
+
+  // Cuando cambia departamento, carga ciudades
+  deptSelect.addEventListener("change", () => {
+    const dep = deptSelect.value;
+
+    fillCities(citySelect, dep ? getCiudadesPorDepartamento(citiesMap, dep) : []);
+    citySelect.value = ""; // limpiar selección ciudad
+
+    saveAppState({ leadData: getFormData() });
+  });
+
+  // Cuando cambia ciudad, guarda
+  citySelect.addEventListener("change", () => {
+    saveAppState({ leadData: getFormData() });
+  });
+
+  // ✅ Validación obligatoria + cálculo por submit
+  setupRequiredFieldsValidation();
+
+  // Si venías de ROI y ya había cálculos, puedes mostrarlos de una:
+  if (state?.calculos && document.getElementById("resultado")) {
+    mostrarResultado(state.calculos);
   }
 });

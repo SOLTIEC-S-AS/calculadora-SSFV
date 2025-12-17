@@ -532,3 +532,20 @@ textarea.textarea-auto:focus {
   height: 420px;
   margin-top: 20px;
 }
+
+.field-error { outline: 2px solid #dc3545; border-color: #dc3545 !important; }
+
+
+.form-alert{
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  /* Colores de error */
+  background-color: #f8d7da;   /* rojo claro */
+  border: 1px solid #f5c2c7;   /* borde rojo */
+  color: #842029;              /* texto rojo oscuro */
+
+  font-weight: 600;
+  font-size: 0.95rem;
+}

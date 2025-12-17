@@ -64,78 +64,87 @@
       </section>
 
       <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
-      <section class="card card-form">
-        <h2>Datos de tus facturas</h2>
-        <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
+       <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
+<section class="card card-form">
+  <h2>Datos de tus facturas</h2>
+  <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
 
-        <div class="form-row">
-          <div>
-            <label for="fact1">Factura 1 (kWh)</label>
-            <input type="number" id="fact1" placeholder="Ej: 100" min="0">
-          </div>
+  <!-- FORM (para validar obligatorio) -->
+  <form id="ssfvForm" novalidate>
+    <!-- Aviso general -->
+    <div id="formAlert" class="form-alert" style="display:none;"></div>
 
-          <div>
-            <label for="fact2">Factura 2 (kWh)</label>
-            <input type="number" id="fact2" placeholder="Ej: 110" min="0">
-          </div>
+    <div class="form-row">
+      <div>
+        <label for="fact1">Factura 1 (kWh)</label>
+        <input type="number" id="fact1" placeholder="Ej: 100" min="0" inputmode="decimal">
+      </div>
 
-          <div>
-            <label for="fact3">Factura 3 (kWh)</label>
-            <input type="number" id="fact3" placeholder="Ej: 105" min="0">
-          </div>
-        </div>
+      <div>
+        <label for="fact2">Factura 2 (kWh)</label>
+        <input type="number" id="fact2" placeholder="Ej: 110" min="0" inputmode="decimal">
+      </div>
 
-        <!-- DEPARTAMENTO Y CIUDAD -->
-        <div class="form-row">
-          <div>
-            <label for="department">Departamento</label>
-            <select id="department" name="department">
-              <option value="">Selecciona un departamento</option>
-            </select>
-          </div>
+      <div>
+        <label for="fact3">Factura 3 (kWh)</label>
+        <input type="number" id="fact3" placeholder="Ej: 105" min="0" inputmode="decimal">
+      </div>
+    </div>
 
-          <div>
-            <label for="city">Ciudad</label>
-            <select id="city" name="city">
-              <option value="">Selecciona una ciudad</option>
-            </select>
-          </div>
-        </div>
+    <!-- DEPARTAMENTO Y CIUDAD -->
+    <div class="form-row">
+      <div>
+        <label for="department">Departamento</label>
+        <select id="department" name="department">
+          <option value="">Selecciona un departamento</option>
+        </select>
+      </div>
 
-        <div class="form-row">
-          <div>
-            <label for="estrato">Estrato</label>
-            <select id="estrato">
-              <option value="1">Estrato 1</option>
-              <option value="2">Estrato 2</option>
-              <option value="3" selected>Estrato 3</option>
-              <option value="4">Estrato 4</option>
-              <option value="5">Estrato 5</option>
-              <option value="6">Estrato 6</option>
-            </select>
-          </div>
+      <div>
+        <label for="city">Ciudad</label>
+        <select id="city" name="city">
+          <option value="">Selecciona una ciudad</option>
+        </select>
+      </div>
+    </div>
 
-          <div>
-            <label for="porcentaje">% a cubrir con solar</label>
-            <input type="number" id="porcentaje" value="100" min="10" max="100" step="2">
-            <div class="hint">Entre 10% y 100%.</div>
-          </div>
-        </div>
+    <div class="form-row">
+      <div>
+        <label for="estrato">Estrato</label>
+        <select id="estrato">
+          <option value="">Selecciona un estrato</option>
+          <option value="1">Estrato 1</option>
+          <option value="2">Estrato 2</option>
+          <option value="3" selected>Estrato 3</option>
+          <option value="4">Estrato 4</option>
+          <option value="5">Estrato 5</option>
+          <option value="6">Estrato 6</option>
+        </select>
+      </div>
 
-        <div class="form-row">
-          <div>
-            <label for="baterias">¿Incluir baterías?</label>
-            <select id="baterias">
-              <option value="no">No, solo paneles</option>
-              <option value="si">Sí, sistema con baterías</option>
-            </select>
-          </div>
-        </div>
+      <div>
+        <label for="porcentaje">% a cubrir con solar</label>
+        <input type="number" id="porcentaje" value="100" min="10" max="100" step="2">
+        <div class="hint">Entre 10% y 100%.</div>
+      </div>
+    </div>
 
-        <button id="btn-calcular" class="btn-primario" type="button">
-          Calcular mi sistema <span>➜</span>
-        </button>
-      </section>
+    <div class="form-row">
+      <div>
+        <label for="baterias">¿Incluir baterías?</label>
+        <select id="baterias">
+          <option value="no">No, solo paneles</option>
+          <option value="si">Sí, sistema con baterías</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="btn-calcular" class="btn-primario" type="submit">
+      Calcular mi sistema <span>➜</span>
+    </button>
+  </form>
+</section>
+
 
       <!-- COLUMNA 3: RESULTADO + CONTACTO -->
       <section class="card card-result">
