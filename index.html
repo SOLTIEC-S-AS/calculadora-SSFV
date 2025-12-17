@@ -10,7 +10,6 @@
 
 <body>
   <div class="wrapper">
-    <!-- ENCABEZADO -->
     <header class="header">
       <div class="header-left">
         <img src="images/Logo_SOLTIEC.jpg" alt="SOLTIEC" class="logo-soltiec">
@@ -19,131 +18,122 @@
           <div class="tagline">Soluciones que entregan valor</div>
         </div>
       </div>
-
       <div>
         <button class="btn-primario" type="button" onclick="window.location.href='roi.html'">
           Ver retorno de inversión
         </button>
-
       </div>
     </header>
-
-    <!-- LAYOUT PRINCIPAL EN 3 COLUMNAS -->
     <main class="layout">
       <!-- COLUMNA 1: TEXTO / HERO -->
       <section class="hero-left">
         <h1>
           Calcula tu <span class="hero-highlight">sistema solar</span> en minutos.
         </h1>
-
         <p>
           Con el valor de tus últimas facturas de energía, SOLTIEC te mostrará un tamaño y costo aproximado
           de tu sistema fotovoltaico. Ideal para viviendas y pequeños negocios.
         </p>
-
         <div class="mini-grid">
           <div class="mini-item">
             <strong>1.</strong>
             Ingresa el valor de tus 3 últimas facturas y tu estrato.
           </div>
-
           <div class="mini-item">
             <strong>2.</strong>
             Elige qué porcentaje de tu consumo quieres cubrir con energía solar.
           </div>
-
           <div class="mini-item">
             <strong>3.</strong>
             Recibe un cálculo estimado y deja tus datos para una propuesta formal.
           </div>
         </div>
-
         <p class="note">
           *Los valores son aproximados. Pueden variar según ciudad, estructura del techo y equipos seleccionados.
         </p>
       </section>
 
       <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
-       <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
-<section class="card card-form">
-  <h2>Datos de tus facturas</h2>
-  <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
+      <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
+      <section class="card card-form">
+        <h2>Datos de tus facturas</h2>
+        <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
 
-  <!-- FORM (para validar obligatorio) -->
-  <form id="ssfvForm" novalidate>
-    <!-- Aviso general -->
-    <div id="formAlert" class="form-alert" style="display:none;"></div>
+        <!-- FORM (para validar obligatorio) -->
+        <form id="ssfvForm" novalidate>
+          <!-- Aviso general -->
+          <div id="formAlert" class="form-alert" style="display:none;"></div>
 
-    <div class="form-row">
-      <div>
-        <label for="fact1">Factura 1 (kWh)</label>
-        <input type="number" id="fact1" placeholder="Ej: 100" min="0" inputmode="decimal">
-      </div>
+          <div class="form-row">
+            <div>
+              <label for="fact1">Factura 1 (kWh)</label>
+              <input type="number" id="fact1" placeholder="Ej: 100" min="0" inputmode="decimal">
+            </div>
 
-      <div>
-        <label for="fact2">Factura 2 (kWh)</label>
-        <input type="number" id="fact2" placeholder="Ej: 110" min="0" inputmode="decimal">
-      </div>
+            <div>
+              <label for="fact2">Factura 2 (kWh)</label>
+              <input type="number" id="fact2" placeholder="Ej: 110" min="0" inputmode="decimal">
+            </div>
 
-      <div>
-        <label for="fact3">Factura 3 (kWh)</label>
-        <input type="number" id="fact3" placeholder="Ej: 105" min="0" inputmode="decimal">
-      </div>
-    </div>
+            <div>
+              <label for="fact3">Factura 3 (kWh)</label>
+              <input type="number" id="fact3" placeholder="Ej: 105" min="0" inputmode="decimal">
+            </div>
+          </div>
 
-    <!-- DEPARTAMENTO Y CIUDAD -->
-    <div class="form-row">
-      <div>
-        <label for="department">Departamento</label>
-        <select id="department" name="department">
-          <option value="">Selecciona un departamento</option>
-        </select>
-      </div>
+          <!-- DEPARTAMENTO Y CIUDAD -->
+          <div class="form-row">
+            <div>
+              <label for="department">Departamento</label>
+              <select id="department" name="department">
+                <option value="">Selecciona un departamento</option>
+              </select>
+            </div>
 
-      <div>
-        <label for="city">Ciudad</label>
-        <select id="city" name="city">
-          <option value="">Selecciona una ciudad</option>
-        </select>
-      </div>
-    </div>
+            <div>
+              <label for="city">Ciudad</label>
+              <select id="city" name="city">
+                <option value="">Selecciona una ciudad</option>
+              </select>
+            </div>
+          </div>
 
-    <div class="form-row">
-      <div>
-        <label for="estrato">Estrato</label>
-        <select id="estrato">
-          <option value="">Selecciona un estrato</option>
-          <option value="1">Estrato 1</option>
-          <option value="2">Estrato 2</option>
-          <option value="3" selected>Estrato 3</option>
-          <option value="4">Estrato 4</option>
-          <option value="5">Estrato 5</option>
-          <option value="6">Estrato 6</option>
-        </select>
-      </div>
+          <div class="form-row">
+            <div>
+              <label for="estrato">Estrato</label>
+              <select id="estrato">
+                <option value="">Selecciona un estrato</option>
+                <option value="1">Estrato 1</option>
+                <option value="2">Estrato 2</option>
+                <option value="3" selected>Estrato 3</option>
+                <option value="4">Estrato 4</option>
+                <option value="5">Estrato 5</option>
+                <option value="6">Estrato 6</option>
+              </select>
+            </div>
 
-      <div>
-        <label for="porcentaje">% a cubrir con solar</label>
-        <input type="number" id="porcentaje" value="100" min="10" max="100" step="2">
-        <div class="hint">Entre 10% y 100%.</div>
-      </div>
-    </div>
+            <div>
+              <label for="porcentaje">% a cubrir con solar</label>
+              <input type="number" id="porcentaje" value="100" min="10" max="100" step="2">
+              <div class="hint">Entre 10% y 100%.</div>
+            </div>
+          </div>
 
-    <div class="form-row">
-      <div>
-        <label for="baterias">¿Incluir baterías?</label>
-        <select id="baterias">
-          <option value="no">No, solo paneles</option>
-          <option value="si">Sí, sistema con baterías</option>
-        </select>
-      </div>
-    </div>
+          <div class="form-row">
+            <div>
+              <label for="baterias">¿Incluir baterías?</label>
+              <select id="baterias">
+                <option value="no">No, solo paneles</option>
+                <option value="si">Sí, sistema con baterías</option>
+              </select>
+            </div>
+          </div>
 
-    <button id="btn-calcular" class="btn-primario" type="submit">
-      Calcular mi sistema <span>➜</span>
-    </button>
-  </form>
-</section>
+          <button id="btn-calcular" class="btn-primario" type="submit">
+            Calcular mi sistema <span>➜</span>
+          </button>
+        </form>
+      </section>
 
 
       <!-- COLUMNA 3: RESULTADO + CONTACTO -->
@@ -190,9 +180,9 @@
         </button>
       </section>
     </main>
-<footer class="footer">
-  © <span id="current-year"></span> SOLTIEC S.A.S. · Soluciones que entregan valor.
-</footer>
+    <footer class="footer">
+      © <span id="current-year"></span> SOLTIEC S.A.S. · Soluciones que entregan valor.
+    </footer>
 
 
   </div>

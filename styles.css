@@ -538,14 +538,23 @@ textarea.textarea-auto:focus {
 
 .form-alert{
   margin-bottom: 14px;
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
 
-  /* Colores de error */
-  background-color: #f8d7da;   /* rojo claro */
-  border: 1px solid #f5c2c7;   /* borde rojo */
-  color: #842029;              /* texto rojo oscuro */
-
+  background-color: #fdecea;   /* rojo suave */
+  border: 1px solid #f5a5a5;   /* rojo técnico */
+  color: #8a1f1f;              /* texto oscuro */
   font-weight: 600;
   font-size: 0.95rem;
+}
+
+.field-error{
+  border-color: #d64545 !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(214, 69, 69, 0.15);
+}
+
+.form-alert::before{
+  content: "⚠ ";
+  font-weight: 700;
 }

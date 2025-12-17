@@ -1,34 +1,22 @@
 const URL_CITIES = "data/cities.json";
-
-// =====================
-// ESTADO EN MEMORIA (TAB)
-// =====================
-// Se conserva al navegar entre páginas en la misma pestaña,
-// pero lo limpiamos si la navegación fue "reload".
 const SESSION_KEY = "ssf_app_state_v1";
 
-let citiesMap = {}; // "Depto|Ciudad" -> {departamento, municipio, lat, lon, hsp}
+let citiesMap = {};
 let leadData = {};
 let calculos = {};
 
 // ---------------------
-// UTIL: Navegación (para limpiar en reload)
+// UTIL: No borrar datos del formulario cuando navego entre pestañas
 // ---------------------
 function isReloadNavigation() {
   const nav = performance.getEntriesByType?.("navigation")?.[0];
   return nav?.type === "reload";
 }
-
-// Limpia estado si recargaron
 function resetIfReload() {
   if (isReloadNavigation()) {
     sessionStorage.removeItem(SESSION_KEY);
   }
 }
-
-// ---------------------
-// UTIL: Guardar / cargar estado (sessionStorage)
-// ---------------------
 function saveAppState(partial = {}) {
   const current = loadAppState();
   const next = {
@@ -38,7 +26,6 @@ function saveAppState(partial = {}) {
   };
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(next));
 }
-
 function loadAppState() {
   try {
     return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
@@ -65,28 +52,19 @@ function parsePositiveNumber(str) {
   if (!Number.isFinite(n)) return 0;
   return Math.max(0, n);
 }
-
-// Sanitiza input tipo factura: permite dígitos y un punto "."
 function sanitizeFacturaInput(el) {
   let v = String(el.value ?? "");
-
-  // Quitar todo lo que no sea dígito o punto
   v = v.replace(/[^\d.]/g, "");
-
-  // Solo un punto
   const parts = v.split(".");
   if (parts.length > 2) {
     v = parts[0] + "." + parts.slice(1).join("");
   }
-
-  // Evitar que empiece por punto
   if (v.startsWith(".")) v = "0" + v;
-
   el.value = v;
 }
 
 // ---------------------
-// LECTURA FORMULARIO
+// TOMA DE DATOS DEL FORMULARIO
 // ---------------------
 function getFormData() {
   return {
