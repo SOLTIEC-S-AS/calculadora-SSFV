@@ -52,13 +52,10 @@
           *Los valores son aproximados. Pueden variar según ciudad, estructura del techo y equipos seleccionados.
         </p>
       </section>
-
-      <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
       <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
       <section class="card card-form">
         <h2>Datos de tus facturas</h2>
         <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
-
         <!-- FORM (para validar obligatorio) -->
         <form id="ssfvForm" novalidate>
           <!-- Aviso general -->
@@ -97,7 +94,6 @@
               </select>
             </div>
           </div>
-
           <div class="form-row">
             <div>
               <label for="estrato">Estrato</label>
@@ -105,13 +101,12 @@
                 <option value="">Selecciona un estrato</option>
                 <option value="1">Estrato 1</option>
                 <option value="2">Estrato 2</option>
-                <option value="3" selected>Estrato 3</option>
-                <option value="4">Estrato 4</option>
+                <option value="3">Estrato 3</option>
+                <option value="4" selected>Estrato 4</option>
                 <option value="5">Estrato 5</option>
                 <option value="6">Estrato 6</option>
               </select>
             </div>
-
             <div>
               <label for="porcentaje">% a cubrir con solar</label>
               <input type="number" id="porcentaje" value="100" min="10" max="100" step="2">
@@ -128,42 +123,33 @@
               </select>
             </div>
           </div>
-
           <button id="btn-calcular" class="btn-primario" type="submit">
             Calcular mi sistema <span>➜</span>
           </button>
         </form>
       </section>
-
-
       <!-- COLUMNA 3: RESULTADO + CONTACTO -->
       <section class="card card-result">
         <h2>Resultado estimado</h2>
-
         <div id="resultado" class="resultado-empty">
           Aquí verás el cálculo (consumo estimado, potencia, número de paneles, área de techo y costo)
           cuando activemos la calculadora.
         </div>
-
         <hr class="divider">
-
-        <div class="lead-title">¿Quieres una propuesta formal de SOLTIEC?</div>
+        <div class="lead-title">¿Quieres una propuesta formal?</div>
         <p class="disclaimer">
-          Déjanos tus datos y un asesor te contactará.
+          Déjanos tus datos y te contactaremos
         </p>
-
         <div class="form-row">
           <div>
             <label for="nombre">Nombre completo</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
           </div>
-
           <div>
             <label for="telefono">Teléfono / WhatsApp</label>
             <input type="text" id="telefono" placeholder="Ej: 300 123 45 67">
           </div>
         </div>
-
         <div class="form-row">
           <div>
             <label for="correo">Correo electrónico</label>
@@ -171,7 +157,7 @@
           </div>
         </div>
         <div>
-          <label for="comentarios">Comentarios</label>
+          <label for="comentarios">¿Algo más que quieras contarnos?</label>
           <textarea id="comentarios" class="textarea-auto"
             placeholder="Escribe aquí tus comentarios adicionales..."></textarea>
         </div>
@@ -183,10 +169,7 @@
     <footer class="footer">
       © <span id="current-year"></span> SOLTIEC S.A.S. · Soluciones que entregan valor.
     </footer>
-
-
   </div>
   <script src="script.js"></script>
 </body>
-
 </html>

@@ -6,7 +6,7 @@ let leadData = {};
 let calculos = {};
 
 // ---------------------
-// UTIL: No borrar datos del formulario cuando navego entre pestañas
+// Conservar datos ingresados al cambiar de pestaña
 // ---------------------
 function isReloadNavigation() {
   const nav = performance.getEntriesByType?.("navigation")?.[0];
@@ -35,7 +35,7 @@ function loadAppState() {
 }
 
 // ---------------------
-// UTIL: Auto-resize textarea
+// Auto-resize área de texto
 // ---------------------
 function autoResize() {
   this.style.height = "auto";
@@ -43,7 +43,7 @@ function autoResize() {
 }
 
 // ---------------------
-// UTIL: Parse número (facturas) sin negativos
+// Facturas sin números negativos
 // ---------------------
 function parsePositiveNumber(str) {
   const s = String(str ?? "").trim();
@@ -64,24 +64,18 @@ function sanitizeFacturaInput(el) {
 }
 
 // ---------------------
-// TOMA DE DATOS DEL FORMULARIO
+// Datos del formulario
 // ---------------------
 function getFormData() {
   return {
     fact1: parsePositiveNumber(document.getElementById("fact1")?.value),
     fact2: parsePositiveNumber(document.getElementById("fact2")?.value),
     fact3: parsePositiveNumber(document.getElementById("fact3")?.value),
-
     department: document.getElementById("department")?.value || "",
     city: document.getElementById("city")?.value || "",
-
-    // ahora estrato puede venir "" (obligatorio)
     estrato: document.getElementById("estrato")?.value || "",
     porcentaje: parsePositiveNumber(document.getElementById("porcentaje")?.value),
-
-    // ahora baterias es obligatorio: puede venir ""
     baterias: document.getElementById("baterias")?.value || "",
-
     nombre: document.getElementById("nombre")?.value || "",
     telefono: document.getElementById("telefono")?.value || "",
     correo: document.getElementById("correo")?.value || "",
@@ -90,16 +84,14 @@ function getFormData() {
 }
 
 // ---------------------
-// CÁLCULOS
+// Cálculo de presupuesto
 // ---------------------
 function calcularPresupuesto(data, hsp) {
   const sumaFacturas = data.fact1 + data.fact2 + data.fact3;
   const promFacturas = sumaFacturas / 3;
   const consumoDia = promFacturas / 30;
-
-  // Regla rápida: % cobertura / 10
-  const potenciaPicoSistema = data.porcentaje / 10;
-
+  const potenciaPicoSistema = (data.porcentaje * consumoDia) / (0.97 * 0.90 * 0.97 * 100 * hsp);
+  const energiaAno=hsp*potenciaPicoSistema*360*0.85;
   const presupuestoFinal = sumaFacturas / 30;
 
   return {
@@ -108,7 +100,8 @@ function calcularPresupuesto(data, hsp) {
     consumoDia,
     potenciaPicoSistema,
     presupuestoFinal,
-    hsp: Number.isFinite(hsp) ? hsp : null
+    hsp: Number.isFinite(hsp) ? hsp : null,
+    energiaAno
   };
 }
 
@@ -124,13 +117,12 @@ function mostrarResultado(calculos) {
     : `<b>${calculos.hsp.toFixed(3)}</b>`;
 
   resultadoDiv.innerHTML = `
-    <strong>Resultado preliminar</strong><br><br>
-    Suma facturas: <b>${calculos.sumaFacturas.toFixed(2)}</b><br>
-    Promedio facturas: <b>${calculos.promFacturas.toFixed(2)}</b><br>
-    Consumo diario estimado: <b>${calculos.consumoDia.toFixed(2)}</b><br>
-    Potencia Pico del Sistema: <b>${calculos.potenciaPicoSistema.toFixed(1)} kWp</b><br>
-    HSP (ciudad): ${hspTxt}<br>
-    Presupuesto estimado diario: <b>${calculos.presupuestoFinal.toFixed(2)}</b>
+    <strong>Presupuesto preliminar</strong><br><br>
+    Potencia Pico del Sistema: <b>${calculos.potenciaPicoSistema.toFixed(2)} kWp</b><br>
+    Energía generada anual: <b>${calculos.energiaAno.toFixed(2)} kWh</b><br>
+    Área necesaria en techo <b>${calculos.potenciaPicoSistema.toFixed(1)} m²</b><br>
+    Presupuesto estimado: <b>${calculos.presupuestoFinal} $</b>
+    ${calculos.hsp.toFixed(2)}
   `;
 }
 
@@ -141,8 +133,6 @@ async function loadCitiesMap() {
   const resp = await fetch(URL_CITIES);
   if (!resp.ok) throw new Error("No se pudo cargar cities.json");
   const data = await resp.json();
-
-  // Si te llega como array viejo (por si acaso), avisamos
   if (Array.isArray(data)) {
     throw new Error("Tu cities.json sigue en formato viejo (array). Debe ser objeto { 'Depto|Ciudad': {...} }");
   }
