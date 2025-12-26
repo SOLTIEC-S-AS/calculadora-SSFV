@@ -1,4 +1,4 @@
-const URL_CITIES = "data/cities.json";
+const URL_CITIES = "https://soltiec-s-as.github.io/calculadora-SSFV/data/cities.json";
 const SESSION_KEY = "ssf_app_state_v1";
 
 let citiesMap = {};
