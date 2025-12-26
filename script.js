@@ -477,3 +477,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     mostrarResultado(state.calculos);
   }
 });
+
+function sendHeightToParent() {
+  const height = document.documentElement.scrollHeight;
+  parent.postMessage({ iframeHeight: height }, "*");
+}
+
+// enviar al cargar
+window.addEventListener("load", sendHeightToParent);
+
+// enviar si cambia contenido
+window.addEventListener("resize", sendHeightToParent);
+setInterval(sendHeightToParent, 500);
