@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <title>Calculadora Solar - SOLTIEC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://soltiec-s-as.github.io/calculadora-SSFV/styles.css">
 </head>
-
 <body>
   <div class="wrapper">
     <header class="header">
@@ -25,7 +23,6 @@
       </div>
     </header>
     <main class="layout">
-      <!-- COLUMNA 1: TEXTO / HERO -->
       <section class="hero-left">
         <h1>
           Calcula tu <span class="hero-highlight">sistema solar</span> en minutos.
@@ -52,15 +49,11 @@
           *Los valores son aproximados. Pueden variar según ciudad, estructura del techo y equipos seleccionados.
         </p>
       </section>
-      <!-- COLUMNA 2: FORMULARIO CALCULADORA -->
       <section class="card card-form">
         <h2>Datos de tus facturas</h2>
         <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
-        <!-- FORM (para validar obligatorio) -->
         <form id="ssfvForm" novalidate>
-          <!-- Aviso general -->
           <div id="formAlert" class="form-alert" style="display:none;"></div>
-
           <div class="form-row">
             <div>
               <label for="fact1">Factura 1 (kWh)</label>
@@ -77,8 +70,6 @@
               <input type="number" id="fact3" placeholder="Ej: 105" min="0" inputmode="decimal">
             </div>
           </div>
-
-          <!-- DEPARTAMENTO Y CIUDAD -->
           <div class="form-row">
             <div>
               <label for="department">Departamento</label>
@@ -86,7 +77,6 @@
                 <option value="">Selecciona un departamento</option>
               </select>
             </div>
-
             <div>
               <label for="city">Ciudad</label>
               <select id="city" name="city">
@@ -128,7 +118,6 @@
           </button>
         </form>
       </section>
-      <!-- COLUMNA 3: RESULTADO + CONTACTO -->
       <section class="card card-result">
         <h2>Resultado estimado</h2>
         <div id="resultado" class="resultado-empty">

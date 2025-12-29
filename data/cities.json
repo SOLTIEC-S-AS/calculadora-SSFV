@@ -1035,7 +1035,7 @@
     "lon": -74.976985,
     "hsp": 5.4112846153846155
   },
-  "Bogotá,|Bogotá,": {
+  "Bogotá|Bogotá": {
     "departamento": "Bogotá,",
     "municipio": "Bogotá,",
     "lat": 4.649251,
