@@ -122,7 +122,6 @@ async function loadROI() {
     }
   });
 }
-
 document.addEventListener("DOMContentLoaded", async () => {
   setCurrentYear();
   try {

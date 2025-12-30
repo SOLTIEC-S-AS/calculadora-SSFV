@@ -4,6 +4,7 @@ const SESSION_KEY = "ssf_app_state_v1";
 let citiesMap = {};
 let leadData = {};
 let calculos = {};
+let subsidioEstrato= {"Estrato 1":50, "Estrato 2":40};
 
 // ---------------------
 // Conservar datos ingresados al cambiar de pestaña

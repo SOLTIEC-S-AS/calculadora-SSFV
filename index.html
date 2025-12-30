@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Calculadora Solar - SOLTIEC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://soltiec-s-as.github.io/calculadora-SSFV/styles.css">
 </head>
+
 <body>
   <div class="wrapper">
     <header class="header">
       <div class="header-left">
         <img src="images/Logo_SOLTIEC.jpg" alt="SOLTIEC" class="logo-soltiec">
-        <div>
-          <div class="brand">SOLTIEC</div>
-          <div class="tagline">Soluciones que entregan valor</div>
-        </div>
       </div>
       <div>
         <button class="btn-primario" type="button" onclick="window.location.href='roi.html'">
@@ -34,15 +32,19 @@
         <div class="mini-grid">
           <div class="mini-item">
             <strong>1.</strong>
-            Ingresa el valor de tus 3 últimos consumos de energía y tu estrato.
+            Ingresa el valor de tus 3 últimos consumos de energía.
           </div>
           <div class="mini-item">
             <strong>2.</strong>
-            Elige qué porcentaje de tu consumo quieres cubrir con energía solar.
+            Selecciona tu departamento y ciudad.
           </div>
           <div class="mini-item">
             <strong>3.</strong>
-            Recibe un cálculo estimado y deja tus datos para una propuesta formal.
+            Selecciona tu estrato y el porcentaje de la demanda de energía a suplir con el SSFV.
+          </div>
+          <div class="mini-item">
+            <strong>4.</strong>
+            Selecciona si deseas el sistema con o sin baterías.
           </div>
         </div>
         <p class="note">
@@ -50,7 +52,7 @@
         </p>
       </section>
       <section class="card card-form">
-        <h2>Datos de tus facturas</h2>
+        <h2>Información del proyecto</h2>
         <p>Escribe el consumo de energía de tus 3 últimas facturas de energía (en kWh).</p>
         <form id="ssfvForm" novalidate>
           <div id="formAlert" class="form-alert" style="display:none;"></div>
@@ -103,7 +105,6 @@
               <div class="hint">Entre 10% y 100%.</div>
             </div>
           </div>
-
           <div class="form-row">
             <div>
               <label for="baterias">¿Incluir baterías?</label>
@@ -161,4 +162,5 @@
   </div>
   <script src="https://soltiec-s-as.github.io/calculadora-SSFV/script.js"></script>
 </body>
+
 </html>
